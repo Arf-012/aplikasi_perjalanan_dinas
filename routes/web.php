@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TravelRequestController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,18 @@ use App\Http\Controllers\ApprovalController;
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
+
+// Guest Authentication Routes
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+// Authenticated Routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Executive Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -32,4 +45,4 @@ Route::get('/', function () {
     // Policies & Budgets
     Route::get('/policies', [TravelRequestController::class, 'policyRules'])->name('policies.index');
     Route::get('/budgets', [TravelRequestController::class, 'budgets'])->name('budgets.index');
-    Route::get('/reports', [TravelRequestController::class, 'complianceReports'])->name('reports.index');
+});
