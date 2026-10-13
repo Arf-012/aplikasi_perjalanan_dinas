@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Corporate Department Budgets & Cost Centers')
+@section('title', 'Anggaran Departemen & Pusat Biaya (Cost Center)')
 
 @section('content')
 <div class="space-y-6">
@@ -8,26 +8,26 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <nav class="flex items-center gap-1.5 text-xs text-[#737780] mb-1.5">
-                <a href="{{ route('dashboard') }}" class="hover:text-[#00254e] transition-colors">Dashboard</a>
+                <a href="{{ route('dashboard') }}" class="hover:text-[#00254e] transition-colors">Dasbor</a>
                 <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-                <span class="text-[#00254e] font-semibold">Department Budgets</span>
+                <span class="text-[#00254e] font-semibold">Anggaran Departemen</span>
             </nav>
             <h1 class="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-[#00254e] tracking-tight">
-                Departmental Travel Budgets &amp; Cost Centers
+                Anggaran Perjalanan Departemen &amp; Cost Center
             </h1>
             <p class="text-xs sm:text-sm text-[#43474f] mt-0.5">
-                Fiscal Year 2026 corporate travel expenditure, remaining liquidity pool, and real-time cost center burn rates.
+                Pengeluaran perjalanan dinas Tahun Anggaran 2026, sisa likuiditas dana, dan tingkat penyerapan anggaran real-time.
             </p>
         </div>
 
         <div class="flex items-center gap-2">
             <a href="{{ route('policies.index') }}" class="h-10 px-3.5 bg-white border border-[#c3c6d1]/60 hover:bg-[#f0f3ff] text-xs font-semibold text-[#111c2d] rounded-xl shadow-2xs flex items-center gap-1.5 transition-all">
                 <span class="material-symbols-outlined text-[18px] text-[#00254e]">gavel</span>
-                <span>Travel Policies</span>
+                <span>Kebijakan Perjalanan</span>
             </a>
             <a href="{{ route('trips.index') }}" class="h-10 px-3.5 bg-[#00254e] hover:bg-[#001833] text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 transition-all">
                 <span class="material-symbols-outlined text-[18px]">receipt_long</span>
-                <span>View Encumbered Trips</span>
+                <span>Daftar Perjalanan Terkait</span>
             </a>
         </div>
     </div>
@@ -36,53 +36,53 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs">
             <div class="flex items-center justify-between text-[#737780] text-xs font-medium mb-1">
-                <span>Total Allocated (FY2026)</span>
+                <span>Total Pagu Anggaran (TA 2026)</span>
                 <span class="material-symbols-outlined text-[18px] text-[#00254e]">account_balance</span>
             </div>
             <div class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[#111c2d]">
-                Rp {{ number_format($totalAllocated ?? 1030000000, 0, ',', '.') }}
+                Rp {{ number_format($totalAllocated ?? 0, 0, ',', '.') }}
             </div>
             <div class="text-[11px] text-[#737780] font-semibold mt-1">
-                5 Cost Centers Tracked
+                {{ count($budgets) }} Pusat Biaya Terpantau
             </div>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs">
             <div class="flex items-center justify-between text-[#737780] text-xs font-medium mb-1">
-                <span>Committed Expenditure</span>
+                <span>Realisasi Pengeluaran</span>
                 <span class="material-symbols-outlined text-[18px] text-amber-500">payments</span>
             </div>
             <div class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[#111c2d]">
-                Rp {{ number_format($totalSpent ?? 635000000, 0, ',', '.') }}
+                Rp {{ number_format($totalSpent ?? 0, 0, ',', '.') }}
             </div>
             <div class="text-[11px] text-amber-600 font-semibold mt-1">
-                Flights, Lodging &amp; Per-Diems
+                Tiket, Hotel &amp; Uang Harian
             </div>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs">
             <div class="flex items-center justify-between text-[#737780] text-xs font-medium mb-1">
-                <span>Available Liquidity</span>
+                <span>Sisa Likuiditas Dana</span>
                 <span class="material-symbols-outlined text-[18px] text-emerald-500">savings</span>
             </div>
             <div class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-emerald-700">
-                Rp {{ number_format($remainingLiquidity ?? 395000000, 0, ',', '.') }}
+                Rp {{ number_format($remainingLiquidity ?? 0, 0, ',', '.') }}
             </div>
             <div class="text-[11px] text-emerald-600 font-semibold mt-1">
-                Authorized for Q4 Travel
+                Tersedia untuk Perjalanan Dinas
             </div>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs">
             <div class="flex items-center justify-between text-[#737780] text-xs font-medium mb-1">
-                <span>Overall Utilization</span>
+                <span>Penyerapan Keseluruhan</span>
                 <span class="material-symbols-outlined text-[18px] text-[#00677e]">pie_chart</span>
             </div>
             <div class="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[#111c2d]">
-                {{ $overallUtilization ?? 61.7 }}%
+                {{ $overallUtilization ?? 0 }}%
             </div>
             <div class="w-full bg-gray-100 rounded-full h-1.5 mt-2 overflow-hidden">
-                <div class="bg-[#00677e] h-1.5 rounded-full" style="width: {{ $overallUtilization ?? 61.7 }}%"></div>
+                <div class="bg-[#00677e] h-1.5 rounded-full" style="width: {{ min(100, $overallUtilization ?? 0) }}%"></div>
             </div>
         </div>
     </div>
@@ -92,14 +92,14 @@
         <div class="px-5 py-4 border-b border-[#c3c6d1]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
                 <h2 class="text-base font-bold font-['Plus_Jakarta_Sans'] text-[#111c2d]">
-                    Cost Center Allocation Registry (database.sql: department_budgets)
+                    Registri Alokasi Anggaran Pusat Biaya (Cost Center)
                 </h2>
                 <p class="text-xs text-[#737780] mt-0.5">
-                    Live balances and expenditure utilization synchronized directly with database records.
+                    Saldo berjalan dan pemanfaatan belanja dinas disinkronkan langsung dengan basis data.
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <span class="text-xs text-[#737780]">Fiscal Year: <strong>2026</strong></span>
+                <span class="text-xs text-[#737780]">Tahun Anggaran: <strong>2026</strong></span>
             </div>
         </div>
 
@@ -107,13 +107,13 @@
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
                     <tr class="bg-[#f0f3ff]/60 border-b border-[#c3c6d1]/40 text-[11px] font-bold uppercase tracking-wider text-[#737780]">
-                        <th class="py-3.5 px-5">Cost Center</th>
-                        <th class="py-3.5 px-4">Department</th>
-                        <th class="py-3.5 px-4 text-right">Annual Budget</th>
-                        <th class="py-3.5 px-4 text-right">Committed Spend</th>
-                        <th class="py-3.5 px-4 text-right">Remaining Balance</th>
-                        <th class="py-3.5 px-5">Utilization</th>
-                        <th class="py-3.5 px-4 text-center">Status</th>
+                        <th class="py-3.5 px-5">PUSAT BIAYA</th>
+                        <th class="py-3.5 px-4">DEPARTEMEN</th>
+                        <th class="py-3.5 px-4 text-right">PAGU TAHUNAN</th>
+                        <th class="py-3.5 px-4 text-right">REALISASI BELANJA</th>
+                        <th class="py-3.5 px-4 text-right">SISA SALDO</th>
+                        <th class="py-3.5 px-5">PENYERAPAN</th>
+                        <th class="py-3.5 px-4 text-center">STATUS</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#c3c6d1]/20">
@@ -135,7 +135,7 @@
                         <!-- Department Name -->
                         <td class="py-4 px-4 font-bold text-[#111c2d]">
                             {{ $budget->department_name }}
-                            <div class="text-[10px] text-[#737780] font-normal">Active Cost Pool FY{{ $budget->fiscal_year }}</div>
+                            <div class="text-[10px] text-[#737780] font-normal">Pusat Biaya Aktif TA {{ $budget->fiscal_year }}</div>
                         </td>
 
                         <!-- Total Budget -->
@@ -159,7 +159,7 @@
                                 <span class="{{ $isCritical ? 'text-red-700' : ($isWarning ? 'text-amber-700' : 'text-[#00254e]') }}">
                                     {{ $utilPct }}%
                                 </span>
-                                <span class="text-[10px] text-[#737780]">Cap 100%</span>
+                                <span class="text-[10px] text-[#737780]">Batas 100%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                                 <div
@@ -174,17 +174,17 @@
                             @if($isCritical)
                                 <span class="px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-bold border border-red-200 inline-flex items-center gap-1">
                                     <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                    Critical (&gt;90%)
+                                    Kritis (&gt;90%)
                                 </span>
                             @elseif($isWarning)
                                 <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-200 inline-flex items-center gap-1">
                                     <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                    Attention
+                                    Perhatian
                                 </span>
                             @else
                                 <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200 inline-flex items-center gap-1">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                    Healthy
+                                    Aman
                                 </span>
                             @endif
                         </td>
@@ -192,7 +192,7 @@
                     @empty
                     <tr>
                         <td colspan="7" class="py-8 text-center text-gray-500">
-                            No departmental budget records found in database.
+                            Tidak ada data anggaran departemen di database.
                         </td>
                     </tr>
                     @endforelse
@@ -202,11 +202,11 @@
 
         <div class="p-4 bg-[#f0f3ff]/50 border-t border-[#c3c6d1]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#737780]">
             <div>
-                Data sourced from table <code>department_budgets</code> (MySQL 8.0 / MariaDB compliant).
+                Data bersumber dari tabel <code>department_budgets</code>.
             </div>
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
-                <span>Automatic budget validation during requisition creation</span>
+                <span>Validasi saldo otomatis pada setiap pengajuan perjalanan dinas</span>
             </div>
         </div>
     </div>

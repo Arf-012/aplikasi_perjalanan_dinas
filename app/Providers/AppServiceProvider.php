@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\TravelRequest;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,11 +29,11 @@ class AppServiceProvider extends ServiceProvider
                                || in_array($user->band ?? '', ['Band 4', 'Band 5']);
 
                     if ($isApprover) {
-                        $count = \App\Models\TravelRequest::where(function ($q) {
+                        $count = TravelRequest::where(function ($q) {
                             $q->where('approval_stage', 'like', '%Pending%')
-                              ->orWhere('approval_stage', 'like', '%Review%')
-                              ->orWhere('approval_stage', 'like', '%Manager%')
-                              ->orWhere('approval_stage', 'like', '%Director%');
+                                ->orWhere('approval_stage', 'like', '%Review%')
+                                ->orWhere('approval_stage', 'like', '%Manager%')
+                                ->orWhere('approval_stage', 'like', '%Director%');
                         })->count();
                     } else {
                         $count = 0;
@@ -51,22 +52,22 @@ class AppServiceProvider extends ServiceProvider
                 if (auth()->check()) {
                     $user = auth()->user();
                     $view->with([
-                        'userNotifications'        => $user->notifications()->latest()->take(15)->get(),
+                        'userNotifications' => $user->notifications()->latest()->take(15)->get(),
                         'unreadNotificationsCount' => $user->unreadNotifications()->count(),
-                        'totalNotificationsCount'  => $user->notifications()->count(),
+                        'totalNotificationsCount' => $user->notifications()->count(),
                     ]);
                 } else {
                     $view->with([
-                        'userNotifications'        => collect(),
+                        'userNotifications' => collect(),
                         'unreadNotificationsCount' => 0,
-                        'totalNotificationsCount'  => 0,
+                        'totalNotificationsCount' => 0,
                     ]);
                 }
             } catch (\Throwable $e) {
                 $view->with([
-                    'userNotifications'        => collect(),
+                    'userNotifications' => collect(),
                     'unreadNotificationsCount' => 0,
-                    'totalNotificationsCount'  => 0,
+                    'totalNotificationsCount' => 0,
                 ]);
             }
         });

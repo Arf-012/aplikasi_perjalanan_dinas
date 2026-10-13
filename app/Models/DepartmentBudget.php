@@ -21,10 +21,10 @@ class DepartmentBudget extends Model
     ];
 
     protected $casts = [
-        'budget_amount'        => 'decimal:2',
-        'spent_amount'         => 'decimal:2',
-        'fiscal_year'          => 'integer',
-        'utilized_percentage'  => 'float',
+        'budget_amount' => 'decimal:2',
+        'spent_amount' => 'decimal:2',
+        'fiscal_year' => 'integer',
+        'utilized_percentage' => 'float',
     ];
 
     /**
@@ -32,7 +32,7 @@ class DepartmentBudget extends Model
      */
     public function getRemainingAmountAttribute(): float
     {
-        return max(0, (float)$this->budget_amount - (float)$this->spent_amount);
+        return max(0, (float) $this->budget_amount - (float) $this->spent_amount);
     }
 
     /**
@@ -40,7 +40,10 @@ class DepartmentBudget extends Model
      */
     public function getCalculatedUtilizationAttribute(): float
     {
-        if ((float)$this->budget_amount <= 0) return 0;
-        return round(((float)$this->spent_amount / (float)$this->budget_amount) * 100, 1);
+        if ((float) $this->budget_amount <= 0) {
+            return 0;
+        }
+
+        return round(((float) $this->spent_amount / (float) $this->budget_amount) * 100, 1);
     }
 }

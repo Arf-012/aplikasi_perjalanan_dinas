@@ -24,6 +24,7 @@ class UserSeeder extends Seeder
                 'department' => 'Engineering & Technology',
                 'band' => 'Band 2',
                 'role' => 'Employee / Traveler',
+                'approval_limit' => 0.00,
                 'phone' => null,
                 'avatar_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
             ],
@@ -37,6 +38,7 @@ class UserSeeder extends Seeder
                 'department' => 'Product & Design',
                 'band' => 'Band 4',
                 'role' => 'Approver / Line Manager',
+                'approval_limit' => 5000000.00, // Limit Tier 1: ≤ Rp 5.000.000
                 'phone' => null,
                 'avatar_url' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
             ],
@@ -50,6 +52,7 @@ class UserSeeder extends Seeder
                 'department' => 'Corporate Finance',
                 'band' => 'Band 5',
                 'role' => 'Finance Approver / C-Suite',
+                'approval_limit' => 15000000.00, // Limit Tier 2: ≤ Rp 15.000.000
                 'phone' => null,
                 'avatar_url' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
             ],
@@ -63,8 +66,23 @@ class UserSeeder extends Seeder
                 'department' => 'Engineering & Tech',
                 'band' => 'Band 2',
                 'role' => 'Employee / Traveler',
+                'approval_limit' => 0.00,
                 'phone' => null,
                 'avatar_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+            ],
+            [
+                'id' => 5,
+                'name' => 'Hendra Gunawan',
+                'email' => 'hendra.gunawan@travelsys.internal',
+                'password' => Hash::make('password'),
+                'employee_code' => 'EMP-0010',
+                'job_title' => 'Managing Director & CEO',
+                'department' => 'Executive Management',
+                'band' => 'Band 5',
+                'role' => 'Executive Director / C-Suite',
+                'approval_limit' => 100000000.00, // Limit Tier 3: > Rp 15.000.000
+                'phone' => null,
+                'avatar_url' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
             ],
         ];
 

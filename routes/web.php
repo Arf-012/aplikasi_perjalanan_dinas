@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\TravelRequestController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TravelRequestController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,10 +33,17 @@ Route::middleware(['auth'])->group(function () {
     // Executive Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Travel Requests (Trips) Resource
+    // Travel Requests (Trips) Resource & Endpoints
     Route::resource('trips', TravelRequestController::class);
     Route::get('/trips/{trip}/export', [TravelRequestController::class, 'exportPdf'])->name('trips.export');
+    Route::get('/trips/{trip}/certificate', [TravelRequestController::class, 'downloadCertificate'])->name('trips.certificate');
     Route::post('/trips/{trip}/pool-join', [TravelRequestController::class, 'joinTransitPool'])->name('trips.pool.join');
+    Route::post('/trips/{trip}/cancel', [TravelRequestController::class, 'cancel'])->name('trips.cancel');
+    Route::post('/trips/{trip}/reimbursement', [TravelRequestController::class, 'submitReimbursement'])->name('trips.reimbursement');
+    Route::post('/trips/{trip}/reopen', [TravelRequestController::class, 'reopen'])->name('trips.reopen');
+    Route::post('/trips/{trip}/exception', [TravelRequestController::class, 'requestException'])->name('trips.exception');
+    Route::post('/trips/{trip}/remedy', [TravelRequestController::class, 'applyRemedy'])->name('trips.remedy');
+    Route::get('/trips-export-csv', [TravelRequestController::class, 'exportCsv'])->name('trips.export.csv');
 
     // Approvals & Decision Center
     Route::get('/approvals', [ApprovalController::class, 'index'])->name('approvals.index');
@@ -48,6 +56,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports', [TravelRequestController::class, 'complianceReports'])->name('reports.index');
 
     // Notifications Center
-    Route::post('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
-    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 });
