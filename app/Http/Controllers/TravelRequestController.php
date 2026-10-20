@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\TripSubmittedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TravelRequestController extends Controller
 {
@@ -225,19 +226,22 @@ class TravelRequestController extends Controller
         return back()->with('success', 'Rincian perjalanan dinas #'.$trip->request_code.' berhasil diperbarui.');
     }
 
-    /**
-     * Export the travel authorization and itinerary as a formatted PDF.
-     */
-    public function exportPdf(string $id)
-    {
-        $trip = $this->findTrip($id)->load('traveler');
+    
 
-        return response()->streamDownload(function () use ($trip) {
-            echo "Travel Authorization Pass\nTrip ID: #{$trip->request_code}\nRoute: {$trip->origin} -> {$trip->destination}\nTotal: Rp ".number_format($trip->total_cost, 0, ',', '.');
-        }, "travel-pass-{$trip->request_code}.pdf", [
-            'Content-Type' => 'application/pdf',
-        ]);
-    }
+public function exportPdf(string $id)
+{
+    $trip = $this->findTrip($id)->load('traveler');
+
+    $pdf = Pdf::loadView('trips.export', [
+        'trip' => $trip,
+    ])->setPaper('a4', 'portrait');
+
+    return $pdf->download(
+        'travel-pass-' . ($trip->request_code ?? $trip->id) . '.pdf'
+    );
+}
+
+
 
     /**
      * Join the coordinated airport ground transit or carpool group.
