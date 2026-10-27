@@ -46,9 +46,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/trips-export-csv', [TravelRequestController::class, 'exportCsv'])->name('trips.export.csv');
 
     // Approvals & Decision Center
-    Route::get('/approvals', [ApprovalController::class, 'index'])->name('approvals.index');
-    Route::get('/approvals/{trip}', [ApprovalController::class, 'show'])->name('approvals.show');
-    Route::post('/approvals/{trip}/decision', [ApprovalController::class, 'recordDecision'])->name('approvals.decision');
+    Route::middleware(['role:Manager,Finance,Director,Admin'])
+        ->group(function () {
+            Route::get('/approvals', [ApprovalController::class, 'index'])
+                ->name('approvals.index');
+
+            Route::get('/approvals/{trip}', [ApprovalController::class, 'show'])
+                ->name('approvals.show');
+
+            Route::post('/approvals/{trip}/decision', [ApprovalController::class, 'recordDecision'])
+                ->name('approvals.decision');
+        });
 
     // Policies & Budgets
     Route::get('/policies', [TravelRequestController::class, 'policyRules'])->name('policies.index');

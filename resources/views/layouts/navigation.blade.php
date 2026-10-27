@@ -32,16 +32,26 @@
                 <span>Pengajuan Perjalanan</span>
             </a>
 
-            <!-- Persetujuan -->
-            <a href="{{ route('approvals.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all {{ request()->routeIs('approvals.*') ? 'bg-[#00254e] text-white shadow-xs' : 'text-[#43474f] hover:bg-[#f0f3ff] hover:text-[#111c2d]' }}">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-[18px] {{ request()->routeIs('approvals.*') ? 'text-white' : 'text-[#737780]' }}">check_circle</span>
-                    <span>Persetujuan</span>
-                </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ request()->routeIs('approvals.*') ? 'bg-[#00677e] text-white' : 'bg-[#00677e] text-white' }}">
-                    {{ $pendingApprovalsCount ?? 3 }}
-                </span>
-            </a>
+            <!-- Persetujuan: Only for authorized roles -->
+            @if (in_array(auth()->user()->role, [
+                'Manager',
+                'Finance',
+                'Director',
+                'Admin',
+            ], true))
+                <a href="{{ route('approvals.index') }}"
+                   class="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all {{ request()->routeIs('approvals.*') ? 'bg-[#00254e] text-white shadow-xs' : 'text-[#43474f] hover:bg-[#f0f3ff] hover:text-[#111c2d]' }}">
+
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[18px] {{ request()->routeIs('approvals.*') ? 'text-white' : 'text-[#737780]' }}">check_circle</span>
+                        <span>Persetujuan</span>
+                    </div>
+
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00677e] text-white">
+                        {{ $pendingApprovalsCount ?? 3 }}
+                    </span>
+                </a>
+            @endif
 
             <!-- Ruang Kerja Perjalanan -->
             <a href="{{ route('trips.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all {{ request()->routeIs('trips.index') || request()->routeIs('trips.show') ? 'bg-[#00254e] text-white shadow-xs' : 'text-[#43474f] hover:bg-[#f0f3ff] hover:text-[#111c2d]' }}">
