@@ -14,14 +14,15 @@ class RoleSeeder extends Seeder
     {
         $roles = [
             ['id' => 1, 'name' => 'employee', 'display_name' => 'Employee', 'created_at' => now()],
-            ['id' => 2, 'name' => 'manager', 'display_name' => 'Manager', 'created_at' => now()],
+            ['id' => 2, 'name' => 'manager', 'display_name' => 'Line Manager', 'created_at' => now()],
             ['id' => 3, 'name' => 'finance', 'display_name' => 'Finance', 'created_at' => now()],
             ['id' => 4, 'name' => 'travel_admin', 'display_name' => 'Travel Admin', 'created_at' => now()],
+            ['id' => 5, 'name' => 'direktur', 'display_name' => 'Direktur', 'created_at' => now()],
         ];
 
         foreach ($roles as $role) {
             DB::table('roles')->updateOrInsert(
-                ['id' => $role['id']],
+                ['name' => $role['name']],
                 $role
             );
         }

@@ -24,9 +24,7 @@ class AppServiceProvider extends ServiceProvider
             try {
                 if (auth()->check()) {
                     $user = auth()->user();
-                    $isApprover = str_contains($user->role ?? '', 'Approver')
-                               || str_contains($user->role ?? '', 'Manager')
-                               || in_array($user->band ?? '', ['Band 4', 'Band 5']);
+                    $isApprover = $user->canAccessApprovals();
 
                     if ($isApprover) {
                         $count = TravelRequest::where(function ($q) {

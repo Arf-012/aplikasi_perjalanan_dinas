@@ -131,50 +131,83 @@
                 </div>
             </form>
 
-            <!-- Demo Quick Login Presets -->
+            <!-- Demo Quick Login Presets: 5 Roles -->
             <div class="mt-6 pt-5 border-t border-[#c3c6d1]/30">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-[11px] font-bold text-[#737780] uppercase tracking-wider">
-                        Pilih Cepat Akun Demo (Batas Waterfall)
+                <div class="flex items-center justify-between mb-2.5">
+                    <p class="text-[11px] font-bold text-[#737780] uppercase tracking-wider flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[15px] text-[#00677e]">switch_account</span>
+                        <span>Pilih Cepat Akun Demo</span>
                     </p>
-                    <span class="text-[10px] text-[#00677e] font-semibold">Matriks Batas</span>
+                    <span class="text-[10px] text-[#00677e] font-bold bg-[#f0f3ff] px-2 py-0.5 rounded-full border border-[#c3c6d1]/40">
+                        5 Role Tersedia
+                    </span>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
+                    <!-- 1. Role: Employee -->
                     <button
                         type="button"
                         onclick="document.getElementById('email').value='andi.pratama@travelsys.internal'; document.getElementById('password').value='password';"
-                        class="p-2 text-left rounded-lg bg-[#f0f3ff] hover:bg-[#dfe8ff] text-[11px] transition-colors border border-transparent hover:border-[#c3c6d1]/50 cursor-pointer"
+                        class="p-2.5 text-left rounded-xl bg-[#f0f3ff] hover:bg-[#e4edff] text-[11px] transition-all border border-[#c3c6d1]/40 hover:border-[#00677e]/40 shadow-2xs hover:shadow-xs cursor-pointer group"
                     >
-                        <p class="font-bold text-[#00254e]">Andi Pratama</p>
-                        <p class="text-[#737780] text-[10px]">Karyawan (Band 2)</p>
-                        <span class="inline-block mt-1 text-[9px] px-1.5 py-0.2 rounded bg-gray-200 text-gray-700 font-semibold">Pemohon</span>
+                        <div class="flex items-center justify-between gap-1">
+                            <p class="font-bold text-[#00254e] group-hover:text-[#00677e] transition-colors truncate">Andi Pratama</p>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-bold whitespace-nowrap">Employee</span>
+                        </div>
+                        <p class="text-[#737780] text-[10px] mt-0.5 truncate">Senior Consultant (Band 2)</p>
                     </button>
+
+                    <!-- 2. Role: Manager -->
                     <button
                         type="button"
                         onclick="document.getElementById('email').value='siti.rahma@travelsys.internal'; document.getElementById('password').value='password';"
-                        class="p-2 text-left rounded-lg bg-[#e8f5e9] hover:bg-[#c8e6c9] text-[11px] transition-colors border border-emerald-200 cursor-pointer"
+                        class="p-2.5 text-left rounded-xl bg-[#e8f5e9] hover:bg-[#d4edda] text-[11px] transition-all border border-emerald-200 hover:border-emerald-400 shadow-2xs hover:shadow-xs cursor-pointer group"
                     >
-                        <p class="font-bold text-[#1b5e20]">Siti Rahma</p>
-                        <p class="text-[#2e7d32] text-[10px]">Line Manager (Band 4)</p>
-                        <span class="inline-block mt-1 text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold">Tier 1: &le; Rp 5 Jt</span>
+                        <div class="flex items-center justify-between gap-1">
+                            <p class="font-bold text-[#1b5e20] group-hover:text-[#0f4014] transition-colors truncate">Siti Rahma</p>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold whitespace-nowrap">Manager</span>
+                        </div>
+                        <p class="text-[#2e7d32] text-[10px] mt-0.5 truncate">Line Manager (Band 4)</p>
                     </button>
+
+                    <!-- 3. Role: Finance -->
                     <button
                         type="button"
                         onclick="document.getElementById('email').value='budi.santoso@travelsys.internal'; document.getElementById('password').value='password';"
-                        class="p-2 text-left rounded-lg bg-[#e3f2fd] hover:bg-[#bbdefb] text-[11px] transition-colors border border-blue-200 cursor-pointer"
+                        class="p-2.5 text-left rounded-xl bg-[#e3f2fd] hover:bg-[#bbdefb] text-[11px] transition-all border border-blue-200 hover:border-blue-400 shadow-2xs hover:shadow-xs cursor-pointer group"
                     >
-                        <p class="font-bold text-[#0d47a1]">Budi Santoso</p>
-                        <p class="text-[#1565c0] text-[10px]">Finance Director (Band 5)</p>
-                        <span class="inline-block mt-1 text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 font-bold">Tier 2: &le; Rp 15 Jt</span>
+                        <div class="flex items-center justify-between gap-1">
+                            <p class="font-bold text-[#0d47a1] group-hover:text-[#002171] transition-colors truncate">Budi Santoso</p>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold whitespace-nowrap">Finance</span>
+                        </div>
+                        <p class="text-[#1565c0] text-[10px] mt-0.5 truncate">Corporate Finance (Band 5)</p>
                     </button>
+
+                    <!-- 4. Role: Travel Admin -->
+                    <button
+                        type="button"
+                        onclick="document.getElementById('email').value='admin@travelsys.internal'; document.getElementById('password').value='password';"
+                        class="p-2.5 text-left rounded-xl bg-[#fff8e1] hover:bg-[#ffecb3] text-[11px] transition-all border border-amber-200 hover:border-amber-400 shadow-2xs hover:shadow-xs cursor-pointer group"
+                    >
+                        <div class="flex items-center justify-between gap-1">
+                            <p class="font-bold text-[#b45309] group-hover:text-[#78350f] transition-colors truncate">Dewi Lestari</p>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold whitespace-nowrap">Travel Admin</span>
+                        </div>
+                        <p class="text-[#92400e] text-[10px] mt-0.5 truncate">Travel Admin (Band 3)</p>
+                    </button>
+
+                    <!-- 5. Role: Direktur -->
                     <button
                         type="button"
                         onclick="document.getElementById('email').value='hendra.gunawan@travelsys.internal'; document.getElementById('password').value='password';"
-                        class="p-2 text-left rounded-lg bg-[#f3e5f5] hover:bg-[#e1bee7] text-[11px] transition-colors border border-purple-200 cursor-pointer"
+                        class="col-span-2 p-2.5 text-left rounded-xl bg-[#f3e5f5] hover:bg-[#e1bee7] text-[11px] transition-all border border-purple-200 hover:border-purple-400 shadow-2xs hover:shadow-xs cursor-pointer group flex items-center justify-between"
                     >
-                        <p class="font-bold text-[#4a148c]">Hendra Gunawan</p>
-                        <p class="text-[#6a1b9a] text-[10px]">Managing Director / CEO</p>
-                        <span class="inline-block mt-1 text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 font-bold">Tier 3: &gt; Rp 15 Jt</span>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <p class="font-bold text-[#4a148c] group-hover:text-[#311b92] transition-colors">Hendra Gunawan</p>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">Direktur</span>
+                            </div>
+                            <p class="text-[#6a1b9a] text-[10px] mt-0.5">Direktur (Band 5)</p>
+                        </div>
                     </button>
                 </div>
             </div>

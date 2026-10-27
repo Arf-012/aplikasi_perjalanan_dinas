@@ -102,7 +102,7 @@
                     <div class="flex items-center gap-2 sm:gap-4">
                         <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-[#f0f3ff] rounded-full text-xs text-[#00254e] font-semibold border border-[#c3c6d1]/30">
                             <span class="w-2 h-2 rounded-full bg-[#00677e]"></span>
-                            <span>Peran: {{ auth()->user()->role ?? 'Karyawan / Penyetuju' }}</span>
+                            <span>Peran: {{ auth()->user()->role_display_name }}</span>
                         </span>
 
                         <!-- Notification Bell & Role-Based Dropdown -->
@@ -143,8 +143,8 @@
                                         @endif
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wide uppercase whitespace-nowrap {{ str_contains(auth()->user()->role ?? '', 'Approver') || str_contains(auth()->user()->role ?? '', 'Manager') ? 'bg-[#00254e] text-white' : 'bg-[#e0f2fe] text-[#0369a1]' }}">
-                                            {{ str_contains(auth()->user()->role ?? '', 'Approver') || str_contains(auth()->user()->role ?? '', 'Manager') ? 'Penyetuju' : 'Karyawan' }}
+                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wide uppercase whitespace-nowrap {{ auth()->user()->canAccessApprovals() ? 'bg-[#00254e] text-white' : 'bg-[#e0f2fe] text-[#0369a1]' }}">
+                                            {{ auth()->user()->canAccessApprovals() ? 'Penyetuju' : 'Karyawan' }}
                                         </span>
                                         @if(($unreadNotificationsCount ?? 0) > 0)
                                             <form action="{{ route('notifications.markAllAsRead') }}" method="POST" class="m-0 p-0">

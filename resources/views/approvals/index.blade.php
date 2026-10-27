@@ -23,7 +23,7 @@
         <div class="flex items-center gap-2.5">
             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#f0f3ff] text-[#00677e] border border-[#c3c6d1]/40">
                 <span class="w-2 h-2 rounded-full bg-[#00677e] animate-pulse"></span>
-                <span>Otorisasi Aktif: {{ auth()->user()->role ?? 'Penyetuju' }}</span>
+                <span>Otorisasi Aktif: {{ auth()->user()->role_display_name }}</span>
             </span>
 
             <a href="{{ route('trips.index') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-[#c3c6d1]/60 text-xs font-semibold text-[#111c2d] hover:bg-[#f0f3ff] transition-all shadow-2xs">

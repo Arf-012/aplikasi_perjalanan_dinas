@@ -7,9 +7,9 @@ use App\Models\TravelPolicy;
 use App\Models\TravelRequest;
 use App\Models\User;
 use App\Notifications\TripSubmittedNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class TravelRequestController extends Controller
 {
@@ -29,7 +29,7 @@ class TravelRequestController extends Controller
                     ->orWhere('id', 'like', '%'.$q.'%')
                     ->orWhereHas('traveler', function ($t) use ($q) {
                         $t->where('name', 'like', '%'.$q.'%')
-                          ->orWhere('department', 'like', '%'.$q.'%');
+                            ->orWhere('department', 'like', '%'.$q.'%');
                     });
             });
         }
@@ -144,7 +144,8 @@ class TravelRequestController extends Controller
 
             // 2. Notify Line Managers / Approvers
             $approvers = User::where(function ($q) {
-                $q->where('role', 'like', '%Approver%')
+                $q->whereIn('role', [User::ROLE_MANAGER, User::ROLE_FINANCE, User::ROLE_TRAVEL_ADMIN, User::ROLE_DIREKTUR])
+                    ->orWhere('role', 'like', '%Approver%')
                     ->orWhere('role', 'like', '%Manager%')
                     ->orWhereIn('band', ['Band 4', 'Band 5']);
             })->get();
@@ -226,22 +227,18 @@ class TravelRequestController extends Controller
         return back()->with('success', 'Rincian perjalanan dinas #'.$trip->request_code.' berhasil diperbarui.');
     }
 
-    
+    public function exportPdf(string $id)
+    {
+        $trip = $this->findTrip($id)->load('traveler');
 
-public function exportPdf(string $id)
-{
-    $trip = $this->findTrip($id)->load('traveler');
+        $pdf = Pdf::loadView('trips.export', [
+            'trip' => $trip,
+        ])->setPaper('a4', 'portrait');
 
-    $pdf = Pdf::loadView('trips.export', [
-        'trip' => $trip,
-    ])->setPaper('a4', 'portrait');
-
-    return $pdf->download(
-        'travel-pass-' . ($trip->request_code ?? $trip->id) . '.pdf'
-    );
-}
-
-
+        return $pdf->download(
+            'travel-pass-'.($trip->request_code ?? $trip->id).'.pdf'
+        );
+    }
 
     /**
      * Join the coordinated airport ground transit or carpool group.

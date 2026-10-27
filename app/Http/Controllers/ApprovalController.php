@@ -187,10 +187,12 @@ class ApprovalController extends Controller
         if ($decision === 'approve') {
             if (str_contains($trip->approval_stage, 'Finance')) {
                 // Escalate to Finance Approvers
-                $financeApprovers = User::where('role', 'like', '%Finance%')
-                    ->orWhere('department', 'like', '%Finance%')
-                    ->orWhere('band', 'Band 5')
-                    ->get();
+                $financeApprovers = User::where(function ($q) {
+                    $q->whereIn('role', [User::ROLE_FINANCE, User::ROLE_TRAVEL_ADMIN])
+                        ->orWhere('role', 'like', '%Finance%')
+                        ->orWhere('department', 'like', '%Finance%')
+                        ->orWhere('band', 'Band 5');
+                })->get();
                 foreach ($financeApprovers as $fa) {
                     if ($fa->id !== auth()->id()) {
                         $fa->notify(new TripSubmittedNotification($trip));
@@ -198,10 +200,12 @@ class ApprovalController extends Controller
                 }
             } elseif (str_contains($trip->approval_stage, 'Director')) {
                 // Escalate to C-Suite / Executive Directors
-                $directors = User::where('role', 'like', '%Director%')
-                    ->orWhere('role', 'like', '%C-Suite%')
-                    ->orWhere('band', 'Band 5')
-                    ->get();
+                $directors = User::where(function ($q) {
+                    $q->whereIn('role', [User::ROLE_DIREKTUR, User::ROLE_TRAVEL_ADMIN])
+                        ->orWhere('role', 'like', '%Director%')
+                        ->orWhere('role', 'like', '%C-Suite%')
+                        ->orWhere('band', 'Band 5');
+                })->get();
                 foreach ($directors as $dir) {
                     if ($dir->id !== auth()->id()) {
                         $dir->notify(new TripSubmittedNotification($trip));

@@ -45,8 +45,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/trips/{trip}/remedy', [TravelRequestController::class, 'applyRemedy'])->name('trips.remedy');
     Route::get('/trips-export-csv', [TravelRequestController::class, 'exportCsv'])->name('trips.export.csv');
 
-    // Approvals & Decision Center
-    Route::middleware(['role:Manager,Finance,Director,Admin'])
+    // Approvals & Decision Center (Accessible only to the 4 approval roles, excluding employee)
+    Route::middleware(['role:manager,finance,travel_admin,direktur'])
         ->group(function () {
             Route::get('/approvals', [ApprovalController::class, 'index'])
                 ->name('approvals.index');
@@ -56,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
 
             Route::post('/approvals/{trip}/decision', [ApprovalController::class, 'recordDecision'])
                 ->name('approvals.decision');
+
+            Route::post('/approvals/bulk-approve', [ApprovalController::class, 'bulkApprove'])
+                ->name('approvals.bulk');
         });
 
     // Policies & Budgets

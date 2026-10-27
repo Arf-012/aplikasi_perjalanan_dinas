@@ -92,7 +92,7 @@ class AuthController extends Controller
             'job_title' => $validated['job_title'],
             'department' => $validated['department'],
             'band' => $validated['band'],
-            'role' => in_array($validated['band'], ['Band 4', 'Band 5']) ? 'Approver / Director' : 'Employee / Traveler',
+            'role' => in_array($validated['band'], ['Band 4', 'Band 5']) ? User::ROLE_MANAGER : User::ROLE_EMPLOYEE,
             'avatar_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
         ]);
 

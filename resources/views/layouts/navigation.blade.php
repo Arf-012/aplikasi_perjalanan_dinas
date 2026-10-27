@@ -32,13 +32,8 @@
                 <span>Pengajuan Perjalanan</span>
             </a>
 
-            <!-- Persetujuan: Only for authorized roles -->
-            @if (in_array(auth()->user()->role, [
-                'Manager',
-                'Finance',
-                'Director',
-                'Admin',
-            ], true))
+            <!-- Persetujuan: Hanya untuk peran yang berwenang (Manager, Finance, Travel Admin, Direktur) -->
+            @if (auth()->check() && auth()->user()->canAccessApprovals())
                 <a href="{{ route('approvals.index') }}"
                    class="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all {{ request()->routeIs('approvals.*') ? 'bg-[#00254e] text-white shadow-xs' : 'text-[#43474f] hover:bg-[#f0f3ff] hover:text-[#111c2d]' }}">
 
@@ -48,7 +43,7 @@
                     </div>
 
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00677e] text-white">
-                        {{ $pendingApprovalsCount ?? 3 }}
+                        {{ $pendingApprovalsCount ?? 0 }}
                     </span>
                 </a>
             @endif
