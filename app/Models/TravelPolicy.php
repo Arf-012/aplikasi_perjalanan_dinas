@@ -25,7 +25,7 @@ class TravelPolicy extends Model
 
     protected $casts = [
         'amount_limit' => 'decimal:2',
-        'is_active'    => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     /**

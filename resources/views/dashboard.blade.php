@@ -1,288 +1,274 @@
 @extends('layouts.app')
 
-@section('title', 'Corporate Executive Dashboard')
+@section('title', 'Dasbor Perjalanan Dinas — TravelSys')
 
 @section('content')
-    <div class="space-y-6">
-        <!-- Top Greeting & Header Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="space-y-6">
+    <!-- Top Greeting & Header Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="text-[11px] font-bold text-[#737780] uppercase tracking-wider">
+                PORTAL PERUSAHAAN &bull; {{ optional(auth()->user())->department ? 'DIVISI ' . strtoupper(auth()->user()->department) : 'DIVISI REKAYASA & TEKNOLOGI' }}
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[#00254e] tracking-tight mt-1">
+                Selamat datang, {{ explode(' ', auth()->user()->name ?? 'Andi')[0] }}
+            </h1>
+            <p class="text-xs sm:text-sm text-[#43474f] mt-0.5">
+                Sistem otorisasi perjalanan dinas, kepatuhan pagu kebijakan anggaran, dan pelaporan biaya riil terpadu.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+            <a href="{{ route('trips.index') }}"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#c3c6d1]/60 text-xs font-semibold text-[#111c2d] hover:bg-[#f0f3ff] transition-all shadow-2xs">
+                <span class="material-symbols-outlined text-[16px] text-[#737780]">history</span>
+                <span>Daftar Perjalanan</span>
+            </a>
+            <a href="{{ route('trips.create') }}"
+                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#00254e] text-white text-xs font-bold hover:bg-[#00346e] transition-all shadow-xs cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Ajukan Perjalanan</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 4 KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Active Trips -->
+        <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs flex flex-col justify-between">
             <div>
-                <div class="flex items-center gap-2 text-xs font-semibold text-[#00677e] uppercase tracking-wider">
-                    <span class="w-2 h-2 rounded-full bg-[#00677e]"></span>
-                    Corporate Travel Management System
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-[#737780] uppercase tracking-wider">TOTAL PERJALANAN</span>
+                    <span class="material-symbols-outlined text-[18px] text-[#00677e]">flight_takeoff</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-[#00254e] tracking-tight mt-1">
-                    Executive Travel Command Center
-                </h1>
-                <p class="text-xs sm:text-sm text-[#43474f] mt-0.5">
-                    Overview of active authorizations, budget commitments, and upcoming itineraries across PT Astra Digital.
-                </p>
+                <div class="text-2xl font-extrabold font-['Plus_Jakarta_Sans'] text-[#111c2d] mt-2">
+                    {{ $totalTripsCount ?? count($recentTrips) }}
+                </div>
+                <div class="text-xs text-[#43474f] mt-1 truncate font-medium">
+                    Tercatat di sistem
+                </div>
+            </div>
+            <div class="pt-3 border-t border-[#c3c6d1]/20 mt-3 flex items-center justify-between text-[11px]">
+                <span class="text-[#737780]">Aktif Saat Ini</span>
+                <span class="font-bold text-[#00254e]">{{ $activeTripsCount ?? 1 }} Pengajuan</span>
+            </div>
+        </div>
+
+        <!-- Card 2: Pending Approvals -->
+        <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-[#737780] uppercase tracking-wider">MENUNGGU PERSETUJUAN</span>
+                    <span class="material-symbols-outlined text-[18px] text-amber-500">pending_actions</span>
+                </div>
+                <div class="text-2xl font-extrabold font-['Plus_Jakarta_Sans'] text-[#111c2d] mt-2">
+                    {{ $pendingApprovalsCount ?? 0 }}
+                </div>
+                <div class="text-xs text-[#43474f] mt-1 font-medium">
+                    Menunggu Otorisasi Waterfall
+                </div>
+            </div>
+            <div class="pt-3 border-t border-[#c3c6d1]/20 mt-3 flex items-center justify-between text-[11px]">
+                <span class="text-[#737780]">Status Alur</span>
+                <span class="font-bold text-amber-600">SLA Berjalan</span>
+            </div>
+        </div>
+
+        <!-- Card 3: Remaining Budget -->
+        <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-[#737780] uppercase tracking-wider">REALISASI ANGGARAN</span>
+                    <span class="material-symbols-outlined text-[18px] text-[#00254e]">payments</span>
+                </div>
+                <div class="text-xl font-extrabold font-['Plus_Jakarta_Sans'] text-[#111c2d] mt-2 truncate">
+                    Rp {{ number_format($totalCommittedCost ?? 0, 0, ',', '.') }}
+                </div>
+                <div class="text-xs text-[#43474f] mt-1 font-medium">
+                    Total Dana Dinas Teralokasi
+                </div>
+            </div>
+            <div class="pt-3 border-t border-[#c3c6d1]/20 mt-3 flex items-center justify-between text-[11px]">
+                <span class="text-[#737780]">Pusat Biaya</span>
+                <span class="font-bold text-[#00254e]">Tervalidasi Database</span>
+            </div>
+        </div>
+
+        <!-- Card 4: Policy Compliance -->
+        <div class="bg-white p-4 rounded-xl border border-[#c3c6d1]/40 shadow-xs flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-[#737780] uppercase tracking-wider">KEPATUHAN KEBIJAKAN</span>
+                    <span class="material-symbols-outlined text-[18px] text-emerald-600">verified</span>
+                </div>
+                <div class="text-2xl font-extrabold font-['Plus_Jakarta_Sans'] text-[#111c2d] mt-2">
+                    {{ $policyComplianceRate ? number_format($policyComplianceRate, 0) . '%' : '100%' }}
+                </div>
+                <div class="text-xs text-emerald-700 font-medium mt-1 flex items-center gap-1">
+                    <span>Sesuai Batas Kebijakan</span>
+                </div>
+            </div>
+            <div class="pt-3 border-t border-[#c3c6d1]/20 mt-3 flex items-center justify-between text-[11px]">
+                <span class="text-[#737780]">Validasi Sistem</span>
+                <span class="font-bold text-emerald-700">100% Otomatis</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotlight Trip Card (Dinamic from DB) -->
+    @if(isset($spotlightTrip) && $spotlightTrip)
+    <div class="bg-white rounded-2xl border border-[#c3c6d1]/40 shadow-xs p-5 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-[#c3c6d1]/20">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px] text-[#00677e]">fact_check</span>
+                <h2 class="text-sm font-bold text-[#00254e]">Sorotan Pengajuan Perjalanan Terkini</h2>
+            </div>
+            <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#f0f3ff] text-[#00254e] border border-[#c3c6d1]/30">
+                #{{ $spotlightTrip->request_code ?? $spotlightTrip->id }}
+            </span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div>
+                <div class="text-lg font-bold font-['Plus_Jakarta_Sans'] text-[#111c2d]">
+                    {{ $spotlightTrip->origin }} &rarr; {{ $spotlightTrip->destination }}
+                </div>
+                <div class="text-xs text-[#737780] mt-1">
+                    {{ \Carbon\Carbon::parse($spotlightTrip->departure_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($spotlightTrip->return_date)->translatedFormat('d M Y') }} &bull;
+                    <span class="text-[#111c2d] font-semibold">{{ $spotlightTrip->purpose_title ?? $spotlightTrip->purpose }}</span>
+                </div>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-3">
-                @if (isset($spotlightTrip))
-                    <a href="{{ route('trips.export', ['trip' => $spotlightTrip->id, 'format' => 'pdf']) }}"
-                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white border border-[#c3c6d1]/50 text-xs font-semibold text-[#111c2d] hover:bg-[#f0f3ff] transition-all shadow-2xs">
-                        <span class="material-symbols-outlined text-[16px] text-[#00677e]">picture_as_pdf</span>
-                        Export Itinerary PDF
-                    </a>
-                @endif
-                <a href="{{ route('trips.create') }}"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#00254e] text-white text-xs font-semibold hover:bg-[#00346e] transition-all shadow-xs">
-                    <span class="material-symbols-outlined text-[16px]">add_circle</span>
-                    New Travel Request
+            <div class="text-left sm:text-right">
+                <div class="text-xl font-extrabold font-['Plus_Jakarta_Sans'] text-[#00254e]">
+                    Rp {{ number_format($spotlightTrip->total_cost, 0, ',', '.') }}
+                </div>
+                <div class="text-[11px] text-[#737780]">Pusat Biaya: {{ $spotlightTrip->cost_center ?? 'CC-402' }}</div>
+            </div>
+        </div>
+
+        <!-- Waterfall Status Tracker -->
+        <div class="p-3.5 rounded-xl bg-[#f0f3ff]/70 border border-[#c3c6d1]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#00677e]">account_tree</span>
+                <div>
+                    <span class="text-[#737780]">Tahap Alur Saat Ini:</span>
+                    <strong class="text-[#00254e] ml-1">{{ $spotlightTrip->approval_stage }}</strong>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a href="{{ route('trips.export', $spotlightTrip->request_code ?? $spotlightTrip->id) }}" class="px-3 py-1.5 rounded-lg bg-white border border-[#c3c6d1]/60 text-xs font-semibold text-[#111c2d] hover:bg-[#dfe8ff] transition-all">
+                    Unduh PDF
+                </a>
+                <a href="{{ route('trips.show', $spotlightTrip->request_code ?? $spotlightTrip->id) }}" class="px-4 py-1.5 rounded-lg bg-[#00254e] text-white text-xs font-bold hover:bg-[#00346e] transition-all">
+                    Buka Ruang Kerja
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Recent Trips & History Table (Dynamic from DB) -->
+    <div class="bg-white rounded-2xl border border-[#c3c6d1]/40 shadow-xs overflow-hidden">
+        <div class="p-4 sm:p-5 border-b border-[#c3c6d1]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px] text-[#00677e]">history</span>
+                <div>
+                    <h3 class="text-sm font-bold text-[#00254e]">
+                        Histori &amp; Pengajuan Perjalanan Terkini
+                    </h3>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <a href="{{ route('trips.export.csv') }}"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#c3c6d1]/60 text-xs font-semibold text-[#00677e] hover:bg-[#f0f3ff] transition-all">
+                    <span class="material-symbols-outlined text-[16px]">download</span>
+                    <span>Ekspor CSV</span>
+                </a>
+                <a href="{{ route('trips.index') }}"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-[#00254e] hover:underline">
+                    <span>Lihat Semua</span>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
                 </a>
             </div>
         </div>
 
-        <!-- 3 High-Impact Stat Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <!-- Stat 1: Active Authorizations -->
-            <a href="{{ route('trips.index') }}" class="bg-white p-4 rounded-xl border border-[#c3c6d1]/30 hover:border-[#00254e]/50 hover:shadow-xs transition-all flex items-center justify-between group">
-                <div>
-                    <div class="text-[11px] font-semibold text-[#737780] uppercase tracking-wider group-hover:text-[#00254e] transition-colors">Active Authorizations
-                    </div>
-                    <div class="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[#111c2d] mt-1">
-                        {{ $activeTripsCount ?? 0 }} Trips</div>
-                    <div class="text-[10px] text-[#00677e] font-medium mt-1 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[12px]">flight_takeoff</span>
-                        <span>View Trip Workspace</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-lg bg-[#f0f3ff] group-hover:bg-[#00254e] group-hover:text-white transition-all flex items-center justify-center text-[#00254e]">
-                    <span class="material-symbols-outlined text-[22px]">airplane_ticket</span>
-                </div>
-            </a>
-
-            <!-- Stat 2: Pending Approvals -->
-            <a href="{{ route('approvals.index') }}" class="bg-white p-4 rounded-xl border border-[#c3c6d1]/30 hover:border-[#ba1a1a]/50 hover:shadow-xs transition-all flex items-center justify-between group">
-                <div>
-                    <div class="text-[11px] font-semibold text-[#737780] uppercase tracking-wider group-hover:text-[#ba1a1a] transition-colors">Pending Approvals</div>
-                    <div class="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[#ba1a1a] mt-1">
-                        {{ $pendingApprovalsCount ?? 0 }} Requests</div>
-                    <div class="text-[10px] text-[#ba1a1a] font-medium mt-1 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[12px]">schedule</span>
-                        <span>Open Decision Center</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-lg bg-[#ffebee] group-hover:bg-[#ba1a1a] group-hover:text-white transition-all flex items-center justify-center text-[#ba1a1a]">
-                    <span class="material-symbols-outlined text-[22px]">pending_actions</span>
-                </div>
-            </a>
-
-            <!-- Stat 3: Q3 Budget Allocated -->
-            <a href="{{ route('budgets.index') }}" class="bg-white p-4 rounded-xl border border-[#c3c6d1]/30 hover:border-[#2e7d32]/50 hover:shadow-xs transition-all flex items-center justify-between group">
-                <div>
-                    <div class="text-[11px] font-semibold text-[#737780] uppercase tracking-wider group-hover:text-[#2e7d32] transition-colors">Total Encumbered Spend</div>
-                    <div class="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[#111c2d] mt-1">
-                        Rp {{ number_format(($totalCommittedCost ?? 0) / 1000000, 1) }}M
-                    </div>
-                    <div class="text-[10px] text-[#737780] font-medium mt-1 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[12px]">account_balance_wallet</span>
-                        <span>Manage Cost Centers</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-lg bg-[#e8f5e9] group-hover:bg-[#2e7d32] group-hover:text-white transition-all flex items-center justify-center text-[#2e7d32]">
-                    <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
-                </div>
-            </a>
-        </div>
-
-        <!-- Active Spotlight Travel Authorization Card -->
-        @if (isset($spotlightTrip))
-            <div class="bg-white rounded-xl border border-[#c3c6d1]/40 shadow-xs overflow-hidden">
-                <div
-                    class="bg-[#00254e] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="flex items-center gap-3">
-                        <span
-                            class="px-2.5 py-1 rounded bg-[#00677e] text-white font-mono text-xs font-bold uppercase tracking-wider">
-                            #{{ $spotlightTrip->id }}
-                        </span>
-                        <div>
-                            <h2 class="text-base font-bold font-['Plus_Jakarta_Sans']">
-                                Active Authorization: {{ $spotlightTrip->origin }} ({{ $spotlightTrip->origin_code }}) →
-                                {{ $spotlightTrip->destination }} ({{ $spotlightTrip->dest_code }})
-                            </h2>
-                            <div class="text-xs text-[#c3c6d1] flex items-center gap-2 mt-0.5">
-                                <span>Traveler: <strong>{{ $spotlightTrip->traveler->name ?? 'Felix Gonelius' }}</strong>
-                                    ({{ $spotlightTrip->traveler->grade ?? 'Senior Architect' }})</span>
-                                <span>•</span>
-                                <span>Purpose: {{ $spotlightTrip->purpose }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('trips.show', $spotlightTrip->id) }}"
-                            class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all border border-white/20 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[16px]">map</span>
-                            Trip Workspace & Coordination
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 6-Stage Clearance Pipeline -->
-                <div class="p-4 sm:p-6 bg-[#f0f3ff]/40 border-b border-[#c3c6d1]/30">
-                    <div class="text-xs font-bold text-[#00254e] uppercase tracking-wider mb-4">
-                        Sequential Travel Authorization Pipeline (6-Stage Governance)
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
-                        @php
-                            $stages = [
-                                ['id' => 'draft', 'name' => '1. Drafted', 'icon' => 'edit_note'],
-                                ['id' => 'policy', 'name' => '2. Policy Pass', 'icon' => 'verified_user'],
-                                ['id' => 'manager', 'name' => '3. Line Manager', 'icon' => 'person_check'],
-                                ['id' => 'finance', 'name' => '4. Finance Review', 'icon' => 'account_balance'],
-                                ['id' => 'director', 'name' => '5. Director SLA', 'icon' => 'military_tech'],
-                                ['id' => 'issued', 'name' => '6. Ticket Issued', 'icon' => 'airplane_ticket'],
-                            ];
-                        @endphp
-
-                        @foreach ($stages as $index => $stage)
-                            @php
-                                $isCompleted = true; // Dynamically evaluated from $spotlightTrip->stage_index >= $index
-                            @endphp
-                            <div class="bg-white rounded-lg p-3 border border-[#c3c6d1]/40 shadow-2xs">
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <span
-                                        class="material-symbols-outlined text-[18px] text-[#00677e]">{{ $stage['icon'] }}</span>
-                                    <span class="w-2 h-2 rounded-full bg-[#00677e]"></span>
-                                </div>
-                                <div class="text-[11px] font-bold text-[#111c2d] leading-tight">{{ $stage['name'] }}</div>
-                                <div class="text-[10px] text-[#00677e] font-semibold mt-1">Cleared</div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Trip Details Summary -->
-                <div class="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-[#00677e] text-[20px]">calendar_today</span>
-                        <div>
-                            <div class="text-[#737780] font-medium">Dates & Schedule</div>
-                            <div class="font-bold text-[#111c2d] mt-0.5">
-                                {{ $spotlightTrip->departure_date ?? 'Oct 24, 2026' }} –
-                                {{ $spotlightTrip->return_date ?? 'Oct 28, 2026' }}</div>
-                            <div class="text-[11px] text-[#43474f]">4 Nights • Direct Garuda Indonesia</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-[#00677e] text-[20px]">hotel</span>
-                        <div>
-                            <div class="text-[#737780] font-medium">Lodging Allocation</div>
-                            <div class="font-bold text-[#111c2d] mt-0.5">
-                                {{ $spotlightTrip->hotel_name ?? 'Shangri-La Surabaya (Deluxe Suite)' }}</div>
-                            <div class="text-[11px] text-[#00677e] font-semibold">Under Hotel Policy Cap (Rp 1.45M/night)
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-[#00677e] text-[20px]">payments</span>
-                        <div>
-                            <div class="text-[#737780] font-medium">Total Encumbered Amount</div>
-                            <div class="font-bold text-[#111c2d] text-sm mt-0.5">Rp
-                                {{ number_format($spotlightTrip->total_cost ?? 6250000, 0, ',', '.') }}</div>
-                            <div class="text-[11px] text-[#737780]">Cost Center: CC-CORP-TECH-401</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        <!-- Recent Travel Requests Table -->
-        <div class="bg-white rounded-xl border border-[#c3c6d1]/40 shadow-xs overflow-hidden">
-            <div
-                class="p-4 sm:p-5 border-b border-[#c3c6d1]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                    <h3 class="text-base font-bold font-['Plus_Jakarta_Sans'] text-[#00254e]">
-                        Recent Enterprise Travel Requests
-                    </h3>
-                    <p class="text-xs text-[#737780]">Corporate travel authorizations and clearance logs</p>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('trips.index') }}"
-                        class="text-xs font-bold text-[#00677e] hover:underline flex items-center gap-1">
-                        View All {{ $totalTripsCount ?? 28 }} Requests
-                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr
-                            class="bg-[#f0f3ff] text-[#737780] uppercase tracking-wider text-[10px] font-bold border-b border-[#c3c6d1]/30">
-                            <th class="py-3 px-4">Trip ID</th>
-                            <th class="py-3 px-4">Traveler & Department</th>
-                            <th class="py-3 px-4">Route & Dates</th>
-                            <th class="py-3 px-4">Policy Status</th>
-                            <th class="py-3 px-4 text-right">Cost</th>
-                            <th class="py-3 px-4">Approval Stage</th>
-                            <th class="py-3 px-4 text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[#c3c6d1]/20">
-                        @forelse($recentTrips ?? [] as $trip)
-                            <tr class="hover:bg-[#f0f3ff]/40 transition-colors">
-                                <td class="py-3.5 px-4 font-mono font-bold text-[#00254e]">
-                                    #{{ $trip->request_code ?? $trip->id }}
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <div class="font-bold text-[#111c2d]">{{ optional($trip->traveler)->name ?? 'Corporate Traveler' }}</div>
-                                    <div class="text-[10px] text-[#737780]">{{ optional($trip->traveler)->department ?? 'General' }}</div>
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <div class="font-semibold text-[#111c2d]">{{ $trip->origin_code }} →
-                                        {{ $trip->dest_code }}</div>
-                                    <div class="text-[10px] text-[#737780]">{{ $trip->departure_date ? \Carbon\Carbon::parse($trip->departure_date)->format('M d, Y') : '-' }}</div>
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    @if ($trip->policy_status === 'compliant')
-                                        <span
-                                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#e8f5e9] text-[#2e7d32]">
-                                            <span class="material-symbols-outlined text-[12px]">check</span>
-                                            Compliant
-                                        </span>
-                                    @else
-                                        <span
-                                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#fff3e0] text-[#e65100]">
-                                            <span class="material-symbols-outlined text-[12px]">warning</span>
-                                            Out of Policy
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="py-3.5 px-4 text-right font-bold text-[#111c2d]">
-                                    Rp {{ number_format($trip->total_cost, 0, ',', '.') }}
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span
-                                        class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#dfe8ff] text-[#00254e]">
-                                        {{ $trip->approval_stage }}
-                                    </span>
-                                </td>
-                                <td class="py-3.5 px-4 text-center">
-                                    <a href="{{ route('trips.show', $trip->id) }}"
-                                        class="p-1.5 rounded text-[#00677e] hover:bg-[#dfe8ff] transition-colors inline-block"
-                                        title="Open Trip Workspace">
-                                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-6 text-[#737780]">No travel requests recorded
-                                    yet.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="bg-[#f0f3ff] text-[#737780] uppercase tracking-wider text-[10px] font-bold border-b border-[#c3c6d1]/30">
+                        <th class="py-3 px-4">KODE</th>
+                        <th class="py-3 px-4">PEGAWAI</th>
+                        <th class="py-3 px-4">RUTE</th>
+                        <th class="py-3 px-4">TANGGAL</th>
+                        <th class="py-3 px-4">TOTAL BIAYA</th>
+                        <th class="py-3 px-4">STATUS</th>
+                        <th class="py-3 px-4 text-center">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#c3c6d1]/20">
+                    @forelse($recentTrips as $trip)
+                    <tr class="hover:bg-[#f0f3ff]/40 transition-colors">
+                        <td class="py-3.5 px-4 font-mono font-bold text-[#00254e]">
+                            <a href="{{ route('trips.show', $trip->request_code ?? $trip->id) }}" class="hover:underline">
+                                #{{ $trip->request_code ?? $trip->id }}
+                            </a>
+                        </td>
+                        <td class="py-3.5 px-4 font-semibold text-[#111c2d]">
+                            {{ optional($trip->traveler)->name ?? 'Andi Pratama' }}
+                        </td>
+                        <td class="py-3.5 px-4 text-[#111c2d]">
+                            {{ $trip->origin_code ?? 'CGK' }} &rarr; {{ $trip->dest_code ?? 'SUB' }}
+                        </td>
+                        <td class="py-3.5 px-4 text-[#43474f]">
+                            {{ \Carbon\Carbon::parse($trip->departure_date)->translatedFormat('d M Y') }}
+                        </td>
+                        <td class="py-3.5 px-4 font-bold text-[#00254e]">
+                            Rp {{ number_format($trip->total_cost, 0, ',', '.') }}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            @if($trip->overall_status === 'booking_ready' || str_contains($trip->approval_stage, 'Confirmed') || str_contains($trip->approval_stage, 'Issued'))
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    Tiket Diterbitkan
+                                </span>
+                            @elseif($trip->overall_status === 'completed')
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    Selesai
+                                </span>
+                            @elseif($trip->overall_status === 'cancelled' || str_contains($trip->approval_stage, 'Ditolak') || str_contains($trip->approval_stage, 'Rejected'))
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200">
+                                    Ditolak
+                                </span>
+                            @elseif($trip->overall_status === 'draft')
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700 border border-gray-200">
+                                    Draf
+                                </span>
+                            @else
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                    Menunggu Persetujuan
+                                </span>
+                            @endif
+                        </td>
+                        <td class="py-3.5 px-4 text-center">
+                            <a href="{{ route('trips.show', $trip->request_code ?? $trip->id) }}"
+                                class="inline-flex items-center gap-1 text-xs font-bold text-[#00677e] hover:underline">
+                                <span>Buka</span>
+                                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-gray-500">
+                            Belum ada pengajuan perjalanan dinas.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 @endsection

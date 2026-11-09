@@ -11,7 +11,9 @@ class TripDecisionNotification extends Notification
     use Queueable;
 
     public TravelRequest $trip;
+
     public string $decision;
+
     public ?string $decisionNotes;
 
     /**
@@ -41,12 +43,17 @@ class TripDecisionNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $code = $this->trip->request_code ?? ('TRV-' . $this->trip->id);
+        $code = $this->trip->request_code ?? ('TRV-'.$this->trip->id);
         $route = "{$this->trip->origin_code} → {$this->trip->dest_code}";
 
         if ($this->decision === 'approve') {
-            $title = "Trip #{$code} Approved";
-            $message = "Your travel request for {$route} has been cleared to stage: {$this->trip->approval_stage}.";
+            if ($this->trip->approval_stage === 'Ticket Issued / Confirmed') {
+                $title = "Trip #{$code} Fully Authorized";
+                $message = "Your travel request for {$route} has received final authorization. Booking clearance issued.";
+            } else {
+                $title = "Trip #{$code} Cleared to Next Tier";
+                $message = "Your travel request for {$route} has been cleared to stage: {$this->trip->approval_stage}.";
+            }
             $icon = 'check_circle';
             $iconColor = 'text-emerald-600 bg-emerald-50';
         } elseif ($this->decision === 'reject') {
@@ -64,17 +71,17 @@ class TripDecisionNotification extends Notification
         }
 
         return [
-            'type'          => 'trip_decision',
-            'target_role'   => 'employee',
-            'trip_id'       => $this->trip->id,
-            'request_code'  => $code,
-            'decision'      => $this->decision,
-            'title'         => $title,
-            'message'       => $message,
-            'amount'        => $this->trip->total_cost,
-            'icon'          => $icon,
-            'icon_color'    => $iconColor,
-            'action_url'    => route('trips.show', $this->trip->id),
+            'type' => 'trip_decision',
+            'target_role' => 'employee',
+            'trip_id' => $this->trip->id,
+            'request_code' => $code,
+            'decision' => $this->decision,
+            'title' => $title,
+            'message' => $message,
+            'amount' => $this->trip->total_cost,
+            'icon' => $icon,
+            'icon_color' => $iconColor,
+            'action_url' => route('trips.show', $this->trip->id),
         ];
     }
 }
