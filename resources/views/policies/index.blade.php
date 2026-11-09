@@ -16,10 +16,6 @@
                 <h1 class="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-[#00254e] tracking-tight">
                     Kebijakan Perjalanan Dinas
                 </h1>
-                <span class="px-2.5 py-0.5 rounded-full bg-[#00677e]/10 text-[#00677e] text-xs font-bold border border-[#00677e]/20 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">verified</span>
-                    Mesin Kebijakan Dinamis (TravelSys Engine)
-                </span>
             </div>
             <p class="text-xs sm:text-sm text-[#43474f] mt-0.5">
                 Batas tarif otomatis, hak kelas kabin, pagu hotel dinamis, dan sistem reward penghematan biaya pegawai.
@@ -46,12 +42,12 @@
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <h3 class="text-sm font-bold font-['Plus_Jakarta_Sans']">Sistem Reward Penghematan Biaya Pegawai Aktif</h3>
-                    <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-400/30">
+                    <h3 class="text-black font-bold font-['Plus_Jakarta_Sans']">Sistem Reward Penghematan Biaya Pegawai Aktif</h3>
+                    <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-400/30">
                         Pegawai Menerima 10% dari Penghematan
                     </span>
                 </div>
-                <p class="text-xs text-white/80 mt-0.5 max-w-2xl leading-relaxed">
+                <p class="text-xs text-black/80 mt-0.5 max-w-2xl leading-relaxed">
                     Pegawai yang memesan tiket penerbangan atau hotel di bawah pagu batas harga dinamis perusahaan memperoleh poin insentif yang dapat ditukarkan untuk voucer belanja atau donasi.
                 </p>
             </div>
@@ -59,7 +55,7 @@
         <div class="flex items-center gap-3 shrink-0">
             <div class="text-right">
                 <div class="text-xs text-white/70">Penghematan Pegawai Q3</div>
-                <div class="text-base font-bold text-amber-300">Rp 48.500.000</div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black text-white border border-black-200 text-sm font-bold font-['Plus_Jakarta_Sans'] tabular-nums">Rp 48.500.000</span>
             </div>
         </div>
     </div>
